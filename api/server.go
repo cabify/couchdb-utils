@@ -2,7 +2,7 @@ package api
 
 import (
 	"fmt"
-	"github.com/awilliams/couchdb-utils/util"
+	"github.com/cabify/couchdb-utils/util"
 )
 
 type Server struct {

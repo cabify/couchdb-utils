@@ -5,7 +5,7 @@ import (
 	"crypto/md5"
 	"encoding/json"
 	"fmt"
-	"github.com/awilliams/couchdb-utils/util"
+	"github.com/cabify/couchdb-utils/util"
 	"io"
 )
 
@@ -18,6 +18,8 @@ type ReplicationConfig struct {
 	CreateTarget bool    `json:"create_target"`
 	Continuous   bool    `json:"continuous"`
 	UserCtx      UserCtx `json:"user_ctx"` // see api/session
+
+	Push bool `json:"-"` // Cause reversal of Source and Target
 }
 
 func (r ReplicationConfig) hasId() bool {
@@ -150,8 +152,17 @@ func (c Couchdb) Replicate(conf ReplicationConfig) error {
 }
 
 func (c Couchdb) ReplicateHost(remoteCouch *Couchdb, conf ReplicationConfig) (*Databases, error) {
+	// Determine which source to use for databases
+	var masterCouch *Couchdb
+	if conf.Push {
+		masterCouch = &c
+	} else {
+		masterCouch = remoteCouch
+	}
+
+	// Grab the list of databases to sync
 	var replicatedDbs Databases
-	remoteDatabases, err := remoteCouch.GetDatabases()
+	databases, err := masterCouch.GetDatabases()
 	if err != nil {
 		return &replicatedDbs, err
 	}
@@ -164,14 +175,20 @@ func (c Couchdb) ReplicateHost(remoteCouch *Couchdb, conf ReplicationConfig) (*D
 		return &replicatedDbs, err
 	}
 	invalidPrefix := uint8('_')
-	for _, remoteDatabase := range remoteDatabases {
-		remoteDbName := *remoteDatabase.Name
-		if remoteDbName[0] == invalidPrefix {
+	for _, db := range databases {
+		dbName := *db.Name
+		if dbName[0] == invalidPrefix {
 			continue
 		}
+		// Swap the source and target if required
+		if conf.Push {
+			conf.Source = dbName
+			conf.Target = remoteCouch.url(dbName)
+		} else {
+			conf.Source = remoteCouch.url(dbName)
+			conf.Target = dbName
+		}
 		conf.UserCtx = session.UserCtx
-		conf.Source = remoteCouch.url(remoteDbName)
-		conf.Target = remoteDbName
 		conf.GenerateId()
 		existingReplicator, found := replicators.findById(conf.ID)
 		if found {
@@ -188,7 +205,7 @@ func (c Couchdb) ReplicateHost(remoteCouch *Couchdb, conf ReplicationConfig) (*D
 		if err != nil {
 			return &replicatedDbs, err
 		}
-		replicatedDbs = append(replicatedDbs, remoteDatabase)
+		replicatedDbs = append(replicatedDbs, db)
 	}
 	return &replicatedDbs, nil
 }

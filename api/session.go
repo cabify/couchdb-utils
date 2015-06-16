@@ -1,7 +1,7 @@
 package api
 
 import (
-	"github.com/awilliams/couchdb-utils/util"
+	"github.com/cabify/couchdb-utils/util"
 	"strings"
 )
 

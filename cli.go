@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	"github.com/awilliams/cobra"
-	"github.com/awilliams/couchdb-utils/api"
-	"github.com/awilliams/couchdb-utils/util"
+	"github.com/cabify/cobra"
+	"github.com/cabify/couchdb-utils/api"
+	"github.com/cabify/couchdb-utils/util"
 	"os"
 )
 
@@ -252,8 +252,8 @@ var replicateCmd = &cobra.Command{
 
 var replicateHostConf api.ReplicationConfig
 var replicateHostCmd = &cobra.Command{
-	Use:   "host <remote_host> [--create --continuous --verbose]",
-	Short: "Replicates all databases in remote host that do not begin with '_'",
+	Use:   "host <remote_host> [--create --continuous --verbose --push]",
+	Short: "Replicates all databases from or to remote host that do not begin with '_'",
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 1 {
 			checkError(fmt.Errorf("Must provide remote database"))
@@ -282,6 +282,7 @@ func executeCli() {
 
 	replicateHostCmd.Flags().BoolVarP(&replicateHostConf.CreateTarget, "create", "", true, "create target database if doesn't exist")
 	replicateHostCmd.Flags().BoolVarP(&replicateHostConf.Continuous, "continuous", "", true, "make the replication continuous")
+	replicateHostCmd.Flags().BoolVarP(&replicateHostConf.Push, "push", "", false, "push to the master database, instead of pull")
 
 	deleteReplicatorCmd.Flags().BoolVarP(&deleteReplicatorConf.All, "all", "", false, "delete all replicators")
 

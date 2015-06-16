@@ -3,7 +3,7 @@ package api
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/awilliams/couchdb-utils/util"
+	"github.com/cabify/couchdb-utils/util"
 	"io"
 	"net/http"
 	"net/url"

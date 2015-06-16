@@ -34,7 +34,7 @@ sys	0m0.016s
 
 ### Download
 
-[Binaries for select systems are available](https://github.com/awilliams/couchdb-utils/releases)
+[Binaries for select systems are available](https://github.com/cabify/couchdb-utils/releases)
 
 There are no dependencies besides the included binary.
 
