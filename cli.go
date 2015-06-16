@@ -276,12 +276,12 @@ func executeCli() {
 	cli.PersistentFlags().BoolVarP(&GlobalConfig.Debug, "debug", "d", false, "print http requests")
 
 	replicateCmd.Flags().BoolVarP(&replicateConf.Cancel, "delete", "", false, "cancel replication")
-	replicateCmd.Flags().BoolVarP(&replicateConf.CreateTarget, "create", "", true, "create target database if doesn't exist")
-	replicateCmd.Flags().BoolVarP(&replicateConf.Continuous, "continuous", "", false, "make the replication continuous")
+	replicateCmd.Flags().BoolVarP(&replicateConf.CreateTarget, "create", "", false, "create target database if doesn't exist")
+	replicateCmd.Flags().BoolVarP(&replicateConf.Continuous, "continuous", "p", false, "make the replication continuous")
 	replicateCmd.Flags().StringVarP(&replicateConf.ID, "id", "", "", "replicator id, required if persistent")
 
-	replicateHostCmd.Flags().BoolVarP(&replicateHostConf.CreateTarget, "create", "", true, "create target database if doesn't exist")
-	replicateHostCmd.Flags().BoolVarP(&replicateHostConf.Continuous, "continuous", "", true, "make the replication continuous")
+	replicateHostCmd.Flags().BoolVarP(&replicateHostConf.CreateTarget, "create", "", false, "create target database if doesn't exist")
+	replicateHostCmd.Flags().BoolVarP(&replicateHostConf.Continuous, "continuous", "", false, "make the replication continuous")
 	replicateHostCmd.Flags().BoolVarP(&replicateHostConf.Push, "push", "", false, "push to the master database, instead of pull")
 
 	deleteReplicatorCmd.Flags().BoolVarP(&deleteReplicatorConf.All, "all", "", false, "delete all replicators")
