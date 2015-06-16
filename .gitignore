@@ -28,3 +28,4 @@ bin/*
 release/*
 
 *.json
+couchdb-utils
